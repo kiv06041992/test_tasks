@@ -1,0 +1,18 @@
+input {
+    margin: 2px;
+    padding: 2px;
+}
+input[type="submit"] {
+    padding: 4px;
+}
+
+
+.menu ul {
+    display: flex;
+    padding: 0px;
+}
+
+.menu ul li {
+    display: block;
+    margin: 0 5px 0 5px;
+}
