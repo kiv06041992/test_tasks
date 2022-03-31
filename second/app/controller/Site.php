@@ -2,6 +2,7 @@
 namespace app\controller;
 
 use app\DB;
+use app\model\User;
 
 class Site extends Controller {
 
@@ -17,12 +18,10 @@ class Site extends Controller {
             $this->post['email'] != '' &&
             isset($this->post['password']) &&
             $this->post['password'] != '') {
-            $r = mysqli_query($this->dbc,
-                        "SELECT * FROM user 
-                                WHERE `email` = '{$this->post['email']}' AND 
-                                      `password` = MD5('{$this->post['password']}')");
 
-            if (mysqli_fetch_assoc($r)) {
+            $modelUser = new User();
+            $r = $modelUser->read(['email' => $this->post['email'], 'password' => md5($this->post['password'])]);
+            if (count($r) > 0) {
                 if ($this->login($this->post['email'])) {
                     $this->goTo('/?controller=User&action=actionIndex');
                 }
@@ -49,17 +48,12 @@ class Site extends Controller {
             isset($this->post["password"]) &&
             $this->post["password"] != '') {
 
-            $r = mysqli_query($this->dbc,
-            "SELECT * FROM `user` WHERE `email` = '{$this->post['email']}'");
-            if (mysqli_fetch_assoc($r)) {
+            $modelUser = new User();
+            if (count($modelUser->read(['email' => $this->post['email']])) > 1) {
                 $data['view']['error'] = 'This email is used already';
             } else {
-                $r = mysqli_query($this->dbc,
-                    "INSERT INTO `user` (`name`, `email`, `password`) 
-                                VALUES ('{$this->post['name']}', 
-                                       '{$this->post['email']}', 
-                                       MD5('{$this->post['password']}'))");
-                if ($r && $this->login($this->post['email'])) {
+                $modelUser->init(['name' => $this->post['name'], 'email' => $this->post['email'], 'password' => md5($this->post['password'])]);
+                if ($modelUser->create() && $this->login($this->post['email'])) {
                     $this->goTo('/?controller=User&action=actionIndex');
                 } else {
                     $data['view']['error'] = 'User was not created.';
@@ -86,8 +80,9 @@ class Site extends Controller {
         }
 
         if (isset($this->get['email'])) {
-            $r = mysqli_query($this->dbc, "SELECT * FROM `user` WHERE `email` = '{$this->get['email']}'");
-            if (mysqli_fetch_assoc($r)) {
+            $modelUser = new User();
+            $r = $modelUser->read(['email' => $this->get['email']]);
+            if (count($r) > 0) {
                 $_SESSION['recovery']['code'] = md5($this->get['email'] . rand());
                 $_SESSION['recovery']['email'] = $this->get['email'];
                 $data['view']['code'] = $_SESSION['recovery']['code'];
