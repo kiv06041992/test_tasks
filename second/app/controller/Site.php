@@ -5,12 +5,12 @@ use app\DB;
 
 class Site extends Controller {
 
-    public function actionIndex() {
+    public function actionIndex(): void {
         $data['view']['title'] = "Main Page";
         $this->showView('index', $data);
     }
 
-    public function actionLogin() {
+    public function actionLogin(): void {
         $data['view']['title'] = "Login Page";
 
         if (isset($this->post['email']) &&
@@ -34,12 +34,12 @@ class Site extends Controller {
         $this->showView('login', $data);
     }
 
-    public function actionLogout() {
+    public function actionLogout(): void {
         $this->logout();
         $this->goTo('/');
     }
 
-    public function actionRegistration() {
+    public function actionRegistration(): void {
         $data['view']['title'] = "Registration Page";
 
         if (isset($this->post["name"]) &&
@@ -71,7 +71,7 @@ class Site extends Controller {
         $this->showView('registration', $data);
     }
 
-    public function actionRecoveryPassword() {
+    public function actionRecoveryPassword(): void {
         $data['view']['title'] = "RecoveryPassword Page";
 
         if (isset($this->get['code'])) {
@@ -100,7 +100,7 @@ class Site extends Controller {
         $this->showView('recoveryPassword', $data);
     }
 
-    private function login($email = '') {
+    private function login(string $email = ''): bool {
         if ($email != '') {
             $_SESSION['email'] = $email;
             return true;
@@ -109,7 +109,7 @@ class Site extends Controller {
         }
     }
 
-    private function logout() {
+    private function logout(): bool {
         session_destroy();
         return true;
     }

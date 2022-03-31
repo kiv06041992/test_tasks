@@ -4,7 +4,7 @@ namespace app;
 use app\controller\Site;
 
 class Router {
-    public static function rout($controller, $action) {
+    public static function rout(string $controller, string $action): void {
         $controller = 'app\controller\\' . $controller;
         $notFound = true;
 
@@ -27,7 +27,7 @@ class Router {
         }
     }
 
-    private static function showError($error) {
+    private static function showError(string $error) {
         if (DEBUG_MODE) {
             echo $error . '<br>';
         }

@@ -7,8 +7,8 @@ use app\DB;
 abstract class Controller {
 
     protected $dbc;
-    protected $get;
-    protected $post;
+    protected array $get = [];
+    protected array $post = [];
 
     public function __construct() {
         $this->dbc  = DB::getConnection();
@@ -23,22 +23,22 @@ abstract class Controller {
         }
     }
 
-    public function actionNotFound() {
+    public function actionNotFound(): void {
         header('HTTP/1.1 404 Not Found');
         $this->showView('error');
     }
 
-    protected function showView($view, $data = []) {
+    protected function showView(string $view, array $data = []): void {
         require DIR_VIEW . '/layout/header.php';
         require DIR_VIEW . '/'.$view.'.php';
         require DIR_VIEW . '/layout/footer.php';
     }
 
-    protected function isUser() {
+    protected function isUser(): bool {
         return isset($_SESSION['email']) && $_SESSION['email'] != '';
     }
 
-    protected function goTo($path) {
+    protected function goTo(string $path): void {
         header("Location: {$path}");
     }
 }
