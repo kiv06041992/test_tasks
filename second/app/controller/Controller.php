@@ -2,16 +2,13 @@
 namespace app\controller;
 
 
-use app\DB;
 
 abstract class Controller {
 
-    protected $dbc;
     protected array $get = [];
     protected array $post = [];
 
     public function __construct() {
-        $this->dbc  = DB::getConnection();
         $this->get  = $_GET;
         $this->post = $_POST;
 

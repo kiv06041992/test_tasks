@@ -25,5 +25,4 @@ spl_autoload_register(function($class) {
     }
 });
 
-
 Router::rout($_REQUEST['controller'] ?? 'Site', $_REQUEST['action'] ?? 'actionIndex');

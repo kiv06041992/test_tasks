@@ -1,7 +1,6 @@
 <?php
 namespace app\controller;
 
-use app\DB;
 use app\model\User;
 
 class Site extends Controller {
@@ -20,7 +19,7 @@ class Site extends Controller {
             $this->post['password'] != '') {
 
             $modelUser = new User();
-            $r = $modelUser->read(['email' => $this->post['email'], 'password' => md5($this->post['password'])]);
+            $r = $modelUser->read(['email' => $this->post['email'], 'password' => md5($this->post['password'])])[0];
             if (count($r) > 0) {
                 if ($this->login($this->post['email'])) {
                     $this->goTo('/?controller=User&action=actionIndex');
@@ -49,11 +48,10 @@ class Site extends Controller {
             $this->post["password"] != '') {
 
             $modelUser = new User();
-            if (count($modelUser->read(['email' => $this->post['email']])) > 1) {
+            if (isset($modelUser->read(['email' => $this->post['email']])[0])) {
                 $data['view']['error'] = 'This email is used already';
             } else {
-                $modelUser->init(['name' => $this->post['name'], 'email' => $this->post['email'], 'password' => md5($this->post['password'])]);
-                if ($modelUser->create() && $this->login($this->post['email'])) {
+                if ($modelUser->create(['id' => null, 'name' => $this->post['name'], 'email' => $this->post['email'], 'password' => md5($this->post['password'])]) && $this->login($this->post['email'])) {
                     $this->goTo('/?controller=User&action=actionIndex');
                 } else {
                     $data['view']['error'] = 'User was not created.';
@@ -81,7 +79,7 @@ class Site extends Controller {
 
         if (isset($this->get['email'])) {
             $modelUser = new User();
-            $r = $modelUser->read(['email' => $this->get['email']]);
+            $r = $modelUser->read(['email' => $this->get['email']])[0];
             if (count($r) > 0) {
                 $_SESSION['recovery']['code'] = md5($this->get['email'] . rand());
                 $_SESSION['recovery']['email'] = $this->get['email'];

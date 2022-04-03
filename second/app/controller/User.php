@@ -22,9 +22,8 @@ class User extends  Controller{
             $this->validateNewPassword($this->post['newPassword'], $this->post['newPasswordRepeat'])) {
             if ($this->post['newPassword'] == $this->post['newPasswordRepeat']) {
                 $user = $this->getUserData();
-                $r = mysqli_query($this->dbc, "UPDATE `user` 
-                                                SET `password` = MD5('{$this->post['newPassword']}') 
-                                                WHERE  `id`='{$user['id']}';");
+                $modelUser = new \app\model\User();
+                $r = $modelUser->update(['password' => md5($this->post['newPassword'])], ['id' => $user['id']]);
 
                 if ($r) {
                     $data['view']['error'] = 'Password was changed';
@@ -51,7 +50,7 @@ class User extends  Controller{
     private function getUserData(): array|null {
         if ($this->isUser()) {
             $modelUser = new \app\model\User();
-            return $modelUser->read(['email' => $_SESSION['email']]);
+            return $modelUser->read(['email' => $_SESSION['email']])[0];
         } else {
             return [];
         }
